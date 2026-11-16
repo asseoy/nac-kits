@@ -424,7 +424,7 @@ $('dBody').onchange = $('dBody').oninput;
 $('dBody').onclick = e => { if (!e.target.closest('[data-rm]')) return; const x = list[+e.target.closest('.row').dataset.n]; toggle(x.id); };
 function listText() {
   return 'הרשימה שלי מ-NAC KITS:\n\n' + list.map((x, n) => { const i = byId.get(x.id);
-    return `${n + 1}. ${i.t}\n   מידה ${x.size}${x.qty > 1 ? `, ${x.qty} יחידות` : ''}${x.name || x.num ? `, על הגב: ${[x.name, x.num].filter(Boolean).join(' ')}` : ''}\n   ${SUPPLIER(x.id)}`; }).join('\n\n');
+    return `${n + 1}. ${i.t}\n   מידה ${x.size}${x.qty > 1 ? `, ${x.qty} יחידות` : ''}${x.name || x.num ? `, על הגב: ${[x.name, x.num].filter(Boolean).join(' ')}` : ''}`; }).join('\n\n');
 }
 $('wa').onclick = () => open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(listText())}`, '_blank');
 $('copy').onclick = async () => { try { await navigator.clipboard.writeText(listText()); toast('הרשימה הועתקה'); } catch (e) { toast('לא הצלחנו להעתיק'); } };
