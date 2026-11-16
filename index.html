@@ -92,16 +92,6 @@ img{display:block;max-width:100%}
 .pick svg{width:20px;height:20px}
 .pick[aria-pressed=true]{background:var(--red);color:#fff}
 .card.sel{border-color:var(--red);box-shadow:0 0 0 2px var(--red)}
-.pr{display:flex;align-items:baseline;gap:6px;margin-top:auto;padding-top:6px}
-.pr b{font-family:var(--disp);font-weight:400;font-size:22px;line-height:1;color:var(--navy);direction:ltr}
-.pr span{font-size:12px;color:#6b7389}
-.rowP{font-family:var(--disp);font-size:18px;color:var(--navy);direction:ltr;text-align:right;margin-top:6px}
-.sum{display:grid;gap:3px;font-size:14px;color:#4b5369;padding-bottom:4px}
-.sum div{display:flex;justify-content:space-between}
-.sum .tot{font-size:18px;font-weight:900;color:var(--ink);border-top:1px solid var(--line);padding-top:6px;margin-top:3px}
-.sum small{color:#9aa1b5;font-weight:500}
-.vPr{font-family:var(--disp);font-size:34px;color:var(--navy);direction:ltr;text-align:right;line-height:1}
-.vPrS{font-size:13px;color:#6b7389}
 .empty{grid-column:1/-1;text-align:center;padding:60px 16px;color:#6b7389}
 .empty b{display:block;font-size:22px;color:var(--ink);margin-bottom:6px}
 .more{height:1px}
@@ -283,7 +273,6 @@ img{display:block;max-width:100%}
   <div class="dHead"><h2>הרשימה שלי</h2><button class="x" data-close aria-label="סגירה">×</button></div>
   <div class="dBody" id="dBody"></div>
   <div class="dFoot" id="dFoot">
-    <div class="sum" id="sum"></div>
     <button class="wa" id="wa">שליחה בוואטסאפ</button>
     <button class="copy" id="copy">העתקת הרשימה</button>
     <button class="clear" id="clear">ניקוי הרשימה</button>
@@ -298,19 +287,18 @@ img{display:block;max-width:100%}
       <span class="lgn" id="vLg"></span>
       <h3 id="vTeam"></h3>
       <p id="vTitle"></p>
-      <div><div class="vPr" id="vPr"></div><span class="vPrS" id="vPrS"></span></div>
       <a id="vMore" target="_blank" rel="noopener">עוד תמונות של החולצה</a>
       <button class="go" id="vGo">הוספה לרשימה</button>
     </div>
   </div>
 </div>
-<button class="fab" id="fab" aria-label="פתיחת הרשימה שלי"><i id="fabN">0</i><span>הרשימה שלי</span><b id="fabT"></b></button>
+<button class="fab" id="fab" aria-label="פתיחת הרשימה שלי"><i id="fabN">0</i><span>הרשימה שלי</span></button>
 <div class="toast" id="toast"></div>
 
 <script src="data.js"></script>
 <script>
 // ---- settings: put a phone number here (972…) to send the list straight to one person ----
-const WA_PHONE = '972584494126';
+const WA_PHONE = '972547740591';
 const SUPPLIER = id => `https://seepro.x.yupoo.com/albums/${id}?uid=1`;
 
 const $ = id => document.getElementById(id);
@@ -319,12 +307,6 @@ const TAGS = { new: 'חדש', retro: 'רטרו', player: 'שחקן', kids: 'יל
 const KIND = { home: 'בית', away: 'חוץ', third: 'שלישית' };
 const cleanT = t => t.replace(/[\s,;]*(size|sz)?[:\s]*\b(XS|S|M)\s*[-–~]\s*\d?X*L\b.*$/i, '').trim() || t;
 const items = K.items.map(r => ({ id: r[0], t: cleanT(r[1]), team: r[2], lg: r[3], s: r[4], y: r[5], k: r[6], tg: r[7] ? r[7].split(',') : [], n: r[8] }));
-// supplier price list (USD), from the supplier's English Price List
-const RATE = 3.7;
-const basePrice = i => i.tg.includes('kids') ? 14 : i.tg.includes('player') ? 16 : i.tg.includes('retro') ? 15 : 12;
-const SIZE_ADD = { XXL: 2, '3XL': 3, '4XL': 4 };
-const rowPrice = x => { const i = byId.get(x.id); return (basePrice(i) + (SIZE_ADD[x.size] || 0) + (x.name || x.num ? 3 : 0)) * x.qty; };
-const ils = d => Math.round(d * RATE);
 const byId = new Map(items.map(i => [i.id, i]));
 const he = t => HE[t] || t;
 const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[׳']/g, '');
@@ -379,7 +361,7 @@ function card(i) {
     <button class="ph" data-view aria-label="הגדלה: ${i.t.replace(/"/g, '')}"><img src="img/${i.id}.webp" alt="" loading="lazy" decoding="async">
       <span class="tag">${tg}${k}</span>${i.s ? `<span class="yr">${i.s}</span>` : ''}</button>
     <button class="pick" data-pick aria-pressed="${on}" aria-label="${on ? 'הסרה מהרשימה' : 'הוספה לרשימה'}">${on ? CHECK : PLUS}</button>
-    <div class="tx"><h3>${he(i.team) === 'עוד' ? 'חולצה' : he(i.team)}</h3><p>${i.t}</p><div class="pr"><b>$${basePrice(i)}</b><span>בערך ${ils(basePrice(i))} ₪ אצל הספק</span></div></div></article>`;
+    <div class="tx"><h3>${he(i.team) === 'עוד' ? 'חולצה' : he(i.team)}</h3><p>${i.t}</p></div></article>`;
 }
 const PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></svg>';
@@ -407,14 +389,13 @@ function syncCard(id) {
   const on = inList(id), b = c.querySelector('.pick');
   c.classList.toggle('sel', on); b.setAttribute('aria-pressed', on); b.innerHTML = on ? CHECK : PLUS; b.setAttribute('aria-label', on ? 'הסרה מהרשימה' : 'הוספה לרשימה');
 }
-const updCount = () => { $('cnt').textContent = list.length; $('fabN').textContent = list.length; $('fabT').textContent = list.length ? '$' + totals().all : ''; $('fab').classList.toggle('on', list.length > 0 && !$('drawer').classList.contains('on')); };
+const updCount = () => { $('cnt').textContent = list.length; $('fabN').textContent = list.length; $('fab').classList.toggle('on', list.length > 0 && !$('drawer').classList.contains('on')); };
 let vId = null;
 function openView(id) {
   const i = byId.get(id); vId = id;
   $('vImg').src = `img/${id}.webp`; $('vImg').alt = i.t;
   $('vLg').textContent = [i.lg === 'עוד' ? '' : i.lg, KIND[i.k] ? `חולצת ${KIND[i.k]}` : '', i.s].filter(Boolean).join('  /  ');
   $('vTeam').textContent = he(i.team) === 'עוד' ? 'חולצה' : he(i.team); $('vTitle').textContent = i.t;
-  $('vPr').textContent = '$' + basePrice(i); $('vPrS').textContent = `בערך ${ils(basePrice(i))} ₪ אצל הספק. שם ומספר על הגב +$3, מידה XXL ומעלה +$2 עד $4`;
   $('vMore').href = SUPPLIER(id); $('vMore').textContent = i.n > 1 ? `עוד ${i.n} תמונות של החולצה` : 'פתיחה אצל הספק';
   syncView(); $('view').classList.add('on'); $('shade').classList.add('on'); $('vGo').focus();
 }
@@ -435,18 +416,15 @@ function renderList() {
           <input data-k="name" placeholder="שם על הגב" maxlength="14" value="${x.name.replace(/"/g, '')}" aria-label="שם על הגב">
           <input class="num" data-k="num" placeholder="מס׳" inputmode="numeric" maxlength="2" value="${x.num}" aria-label="מספר">
           <select data-k="qty" aria-label="כמות">${[1, 2, 3, 4, 5].map(q => `<option value="${q}"${q === x.qty ? ' selected' : ''}>×${q}</option>`).join('')}</select>
-        </div><div class="rowP" data-p>$${rowPrice(x)}</div></div>
+        </div></div>
       <button class="rm" data-rm aria-label="הסרה">×</button></div>`; }).join('');
-  renderSum();
 }
-$('dBody').oninput = e => { const r = e.target.closest('.row'), k = e.target.dataset.k; if (!r || !k) return; const x = list[+r.dataset.n]; x[k] = k === 'qty' ? +e.target.value : e.target.value.trim(); saveList(); updCount(); r.querySelector('[data-p]').textContent = '$' + rowPrice(x); renderSum(); };
+$('dBody').oninput = e => { const r = e.target.closest('.row'), k = e.target.dataset.k; if (!r || !k) return; const x = list[+r.dataset.n]; x[k] = k === 'qty' ? +e.target.value : e.target.value.trim(); saveList(); updCount(); };
 $('dBody').onchange = $('dBody').oninput;
-function totals() { const units = list.reduce((a, x) => a + x.qty, 0), items = list.reduce((a, x) => a + rowPrice(x), 0); const ship = units >= 3 ? 0 : units === 2 ? 6 : units === 1 ? 4 : 0; return { units, items, ship, all: items + ship }; }
-function renderSum() { const t = totals(); $('sum').innerHTML = `<div><span>${t.units} חולצות</span><span>$${t.items}</span></div><div><span>משלוח</span><span>${t.ship ? '$' + t.ship : 'חינם'}</span></div><div class="tot"><span>סה״כ אצל הספק</span><span>$${t.all} <small>(בערך ${ils(t.all)} ₪)</small></span></div>${t.units < 3 ? '<small>מ-3 חולצות המשלוח חינם</small>' : ''}`; }
 $('dBody').onclick = e => { if (!e.target.closest('[data-rm]')) return; const x = list[+e.target.closest('.row').dataset.n]; toggle(x.id); };
 function listText() {
   return 'הרשימה שלי מ-NAC KITS:\n\n' + list.map((x, n) => { const i = byId.get(x.id);
-    return `${n + 1}. ${i.t}\n   מידה ${x.size}${x.qty > 1 ? `, ${x.qty} יחידות` : ''}${x.name || x.num ? `, על הגב: ${[x.name, x.num].filter(Boolean).join(' ')}` : ''}\n   ${SUPPLIER(x.id)}\n   $${rowPrice(x)}`; }).join('\n\n') + (() => { const t = totals(); return `\n\nמשלוח: ${t.ship ? '$' + t.ship : 'חינם'}\nסה״כ אצל הספק: $${t.all} (בערך ${ils(t.all)} ₪)`; })();
+    return `${n + 1}. ${i.t}\n   מידה ${x.size}${x.qty > 1 ? `, ${x.qty} יחידות` : ''}${x.name || x.num ? `, על הגב: ${[x.name, x.num].filter(Boolean).join(' ')}` : ''}\n   ${SUPPLIER(x.id)}`; }).join('\n\n');
 }
 $('wa').onclick = () => open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(listText())}`, '_blank');
 $('copy').onclick = async () => { try { await navigator.clipboard.writeText(listText()); toast('הרשימה הועתקה'); } catch (e) { toast('לא הצלחנו להעתיק'); } };
